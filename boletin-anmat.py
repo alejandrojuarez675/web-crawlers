@@ -10,7 +10,7 @@ from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
 
 
-def getMeses():
+def getPathsDeBusqueda(BASE_URL):
     print(f'---------- GET MESES ----------')
 
     URL = 'http://www.anmat.gov.ar/boletin_anmat/index.asp'
@@ -38,7 +38,8 @@ def getMeses():
         links = [a for a in links if re.search("^\\.", f'{a}')]
 
         def getMes(n):
-            return re.split('/', n)[1]
+            return BASE_URL + re.split('\\./', n)[1]
+            # return re.split('/', n)[1]
         meses = map(getMes, links)
 
     except HTTPError as http_err:
@@ -51,13 +52,8 @@ def getMeses():
     return meses
 
 
-def getUrls(MES_ANIO):
-    print(f'---------- Start scrapping {MES_ANIO} ----------')
-
-    BASE_URL = 'http://www.anmat.gov.ar/boletin_anmat/'
-    URL = BASE_URL + f'{MES_ANIO}/{MES_ANIO}.asp'
-
-    print("[url: " + URL + "]" )
+def getLinksDescagarPDFs(BASE_URL, URL):
+    print(f'---------- Start scrapping {URL} ----------')
 
     links = []
     try:
@@ -79,6 +75,8 @@ def getUrls(MES_ANIO):
         for tag_a in arrays:
             links.append(re.findall('href="(.+)" target', f'{tag_a}')[0])
         
+        MES_ANIO = re.findall(BASE_URL + '(.+)/', f'{URL}')[0]
+
         def generateLinkDescarga(n):
             return BASE_URL + MES_ANIO + '/' + n
         
@@ -98,13 +96,17 @@ def getUrls(MES_ANIO):
 
 print("---------- Start scrapping ----------")
 
-meses = getMeses()
+BASE_URL = 'http://www.anmat.gov.ar/boletin_anmat/'
 
-links = []
-for mes in meses:
-    links += getUrls(mes)
+paths = getPathsDeBusqueda(BASE_URL)
 
-for link in links:
+linksDescagarPDFs = []
+for url in paths:
+    linksDescagarPDFs += getLinksDescagarPDFs(BASE_URL, url)
+
+for link in linksDescagarPDFs:
     print(f'pdf: {link}')
 
-webbrowser.open(links[0])
+print(f'---------- Se encontraron {len(linksDescagarPDFs)} NORMAS ----------')
+
+webbrowser.open(linksDescagarPDFs[0])
