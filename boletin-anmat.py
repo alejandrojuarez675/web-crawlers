@@ -82,6 +82,8 @@ def getLinksDescagarPDFs(BASE_URL, URL):
         
         links = list(map(generateLinkDescarga, links))
 
+        print(f'Se encontraron {len(links)} documentos')
+
     except HTTPError as http_err:
         print(f'HTTP error occurred: {http_err}')
     except Exception as err:
@@ -104,9 +106,9 @@ linksDescagarPDFs = []
 for url in paths:
     linksDescagarPDFs += getLinksDescagarPDFs(BASE_URL, url)
 
-for link in linksDescagarPDFs:
-    print(f'pdf: {link}')
+print(f'---------- End scrapping ----------')
 
-print(f'---------- Se encontraron {len(linksDescagarPDFs)} NORMAS ----------')
+print(f'Se encontraron {len(linksDescagarPDFs)} normas')
+
 
 webbrowser.open(linksDescagarPDFs[0])
