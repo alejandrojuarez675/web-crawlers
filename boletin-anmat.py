@@ -121,10 +121,10 @@ def getTextFromUrlPdf(URL: str):
 
     number_of_pages = read_pdf.getNumPages()
     text = ""
-    for i in range(number_of_pages):
+    for i in range(0, number_of_pages):
         page = read_pdf.getPage(i)
         page_content = page.extractText()
-        text = text + str(page_content)
+        text += str(page_content)
     
     return text
 
