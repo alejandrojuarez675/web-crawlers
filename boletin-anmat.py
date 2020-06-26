@@ -13,6 +13,10 @@ import PyPDF2
 
 
 def getPathsDeBusqueda(BASE_URL):
+    """
+    Esta funcion sirve para navegar el menu de links y obtener los
+    links donde estan las listas de hipervinculos a los pdf
+    """
     print(f'---------- Get Links ----------')
 
     URL = 'http://www.anmat.gov.ar/boletin_anmat/index.asp'
@@ -55,6 +59,10 @@ def getPathsDeBusqueda(BASE_URL):
 
 
 def getLinksDescagarPDFs(BASE_URL, URL):
+    """
+    Esta funcion analiza las paginas donde hay listas de hipervinculos
+    y devuelve los hipervinculos a los PDFs 
+    """
     print(f'---------- Start scrapping {URL} ----------')
 
     links = []
@@ -95,7 +103,12 @@ def getLinksDescagarPDFs(BASE_URL, URL):
 
     return links
 
+
 def getTextFromUrlPdf(URL: str):
+    """
+    Esta funcion lee un pdf que se encuentra en internet y devuelve el
+    texto del documento
+    """
     print(f'Leyendo: {URL} ')
     web_file = requests.get(URL)
 
@@ -111,7 +124,7 @@ def getTextFromUrlPdf(URL: str):
     for i in range(number_of_pages):
         page = read_pdf.getPage(i)
         page_content = page.extractText()
-        text = text + str(page_content.encode('utf-8'))
+        text = text + str(page_content)
     
     return text
 
