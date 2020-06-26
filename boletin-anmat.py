@@ -2,16 +2,18 @@
 # pip3 install requests
 # pip3 install beautifulsoup4
 # pip3 install lxml
+# pip3 install PyPDF2
 
 import requests
 import re
 import webbrowser
 from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
+import PyPDF2
 
 
 def getPathsDeBusqueda(BASE_URL):
-    print(f'---------- GET MESES ----------')
+    print(f'---------- Get Links ----------')
 
     URL = 'http://www.anmat.gov.ar/boletin_anmat/index.asp'
 
@@ -93,6 +95,25 @@ def getLinksDescagarPDFs(BASE_URL, URL):
 
     return links
 
+def getTextFromUrlPdf(URL: str):
+    print(f'Leyendo: {URL} ')
+    web_file = requests.get(URL)
+
+    filename = 'aux/anmat_aux.pdf'
+    fout = open(filename, "wb")
+    fout.write(web_file.content)
+    fout.close()
+
+    read_pdf = PyPDF2.PdfFileReader(filename)
+
+    number_of_pages = read_pdf.getNumPages()
+    text = ""
+    for i in range(number_of_pages):
+        page = read_pdf.getPage(i)
+        page_content = page.extractText()
+        text = text + str(page_content.encode('utf-8'))
+    
+    return text
 
 
 
@@ -107,8 +128,10 @@ for url in paths:
     linksDescagarPDFs += getLinksDescagarPDFs(BASE_URL, url)
 
 print(f'---------- End scrapping ----------')
-
 print(f'Se encontraron {len(linksDescagarPDFs)} normas')
 
+print(f'---------- Leyendo los PDF ----------')
 
-webbrowser.open(linksDescagarPDFs[0])
+texto = getTextFromUrlPdf(linksDescagarPDFs[0])
+print(f'texto de {linksDescagarPDFs[0]}')
+print(texto)
