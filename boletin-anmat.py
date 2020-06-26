@@ -145,6 +145,6 @@ print(f'Se encontraron {len(linksDescagarPDFs)} normas')
 
 print(f'---------- Leyendo los PDF ----------')
 
-texto = getTextFromUrlPdf(linksDescagarPDFs[0])
-print(f'texto de {linksDescagarPDFs[0]}')
-print(texto)
+for i in range(0,10):
+    texto = getTextFromUrlPdf(linksDescagarPDFs[i])
+    print(texto)
